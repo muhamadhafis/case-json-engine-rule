@@ -106,9 +106,8 @@ camunda.subscribe("check-roles", async ({ task, taskService }) => {
     }
 
     // Update variable ke Camunda
-    await taskService.complete(task, {
-      secondRole: secondRole,
-    });
+    await taskService.complete(task, {});
+    await taskService.setVariables(task, { secondRole: secondRole });
 
     console.log("===== [check-roles] Evaluasi =====");
     console.log("Assignee    :", assignee);
