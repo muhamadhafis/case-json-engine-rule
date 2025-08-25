@@ -96,17 +96,23 @@ camunda.subscribe("check-roles", async ({ task, taskService }) => {
 
     const totalRoles = userGroups.length;
 
-    // Jalankan rules
-    const engine = new Engine();
-    buildRules().forEach((rule) => engine.addRule(rule));
-
+    // default false
     let secondRole = false;
-    const results = await engine.run({ assignee, totalRoles });
-    if (results.events.find((e) => e.type === "SECOND_ROLE_TRUE")) {
+
+    // === Cara simple (langsung cek jumlah role) ===
+    if (totalRoles >= 2) {
       secondRole = true;
     }
 
-    // Hanya update variable secondRole
+    // === Cara pakai rules engine (kalau mau fleksibel) ===
+    // const engine = new Engine();
+    // buildRules().forEach((rule) => engine.addRule(rule));
+    // const results = await engine.run({ assignee, totalRoles });
+    // if (results.events.find((e) => e.type === "SECOND_ROLE_TRUE")) {
+    //   secondRole = true;
+    // }
+
+    // Update Camunda variable secondRole
     await taskService.complete(task, {
       secondRole: secondRole,
     });
